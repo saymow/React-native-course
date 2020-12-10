@@ -6,6 +6,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -76,60 +78,63 @@ function Home({ onStartGame }) {
   }
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <View style={styles.container}>
-        <Title style={styles.title}>Start your game</Title>
-        <Card style={styles.main}>
-          {confirmedOutput ? (
-            confirmedOutput
-          ) : (
-            <>
-              <Input
-                label="Select a number"
-                style={{
-                  container: styles.inputContainer,
-                  input: styles.input,
-                  label: styles.label,
-                }}
-                blurOnSubmit
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardType="number-pad"
-                onChangeText={handleNumberInput}
-                value={enteredValue}
-                maxLength={2}
-              />
-              <View style={styles.buttonContainer}>
-                <Button
-                  style={styles.resetButtonContainer}
-                  color="red"
-                  onPress={handleResetNumberInput}
-                >
-                  Reset
-                </Button>
-                <Button
-                  color="green"
-                  style={styles.confirmButtonContainer}
-                  onPress={handleConfirmNumberInput}
-                >
-                  Confirm
-                </Button>
-              </View>
-            </>
-          )}
-        </Card>
-      </View>
-    </TouchableWithoutFeedback>
+    <ScrollView>
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+          }}
+        >
+          <View style={styles.container}>
+            <Title style={styles.title}>Start your game</Title>
+            <Card style={styles.main}>
+              {confirmedOutput ? (
+                confirmedOutput
+              ) : (
+                <>
+                  <Input
+                    label="Select a number"
+                    style={{
+                      container: styles.inputContainer,
+                      input: styles.input,
+                      label: styles.label,
+                    }}
+                    blurOnSubmit
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    onChangeText={handleNumberInput}
+                    value={enteredValue}
+                    maxLength={2}
+                  />
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      style={styles.resetButtonContainer}
+                      color="red"
+                      onPress={handleResetNumberInput}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      color="green"
+                      style={styles.confirmButtonContainer}
+                      onPress={handleConfirmNumberInput}
+                    >
+                      Confirm
+                    </Button>
+                  </View>
+                </>
+              )}
+            </Card>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.bgPrimary,
     flex: 1,
     padding: 10,
     justifyContent: "center",
@@ -141,9 +146,10 @@ const styles = StyleSheet.create({
   },
 
   main: {
-    width: 300,
+    width: "80%",
+    maxWidth: "95%",
+    minWidth: 300,
     paddingVertical: 5,
-    maxWidth: "80%",
   },
 
   inputContainer: {

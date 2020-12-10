@@ -1,23 +1,22 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/colors";
 
 const Button = ({ children, style, color = Colors.primary, ...rest }) => {
   return (
-    <TouchableOpacity style={{ ...style }} {...rest}>
+    <ButtonComponent style={{ ...style }} {...rest}>
       <View style={{ ...styles.container, backgroundColor: color }}>
         <Text style={styles.text}>{children}</Text>
       </View>
-    </TouchableOpacity>
+    </ButtonComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 4,
+    paddingHorizontal: Dimensions.get("window").width * 0.05,
+    borderRadius: 15,
   },
 
   text: {

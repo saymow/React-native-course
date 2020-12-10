@@ -6,6 +6,7 @@ import {
   Alert,
   ScrollView,
   FlatList,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -35,6 +36,11 @@ const renderListItem = (listLen, itemData) => (
 );
 
 function GameScreen({ userChoice, onGameOver }) {
+  const [availableDeviceDimensions, setAvailableDeviceDimensions] = useState({
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+  });
+
   const initialGuess = genRandomBetween(1, 100, userChoice);
 
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
@@ -42,6 +48,21 @@ function GameScreen({ userChoice, onGameOver }) {
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setAvailableDeviceDimensions({
+        width: Dimensions.get("window").width,
+        height: Dimensions.get("window").height,
+      });
+    };
+
+    Dimensions.addEventListener("change", updateLayout);
+
+    return () => {
+      Dimensions.removeEventListener("change", updateLayout);
+    };
+  }, []);
 
   useEffect(() => {
     if (currentGuess === userChoice) onGameOver(pastGuesses.length);
@@ -70,6 +91,37 @@ function GameScreen({ userChoice, onGameOver }) {
     setCurrentGuess(nextNumber);
     setPastGuesses((prev) => [nextNumber.toString(), ...prev]);
   };
+
+  if (availableDeviceDimensions.height < 500) {
+    return (
+      <View style={styles.container}>
+        <Title>Oponnent's Guess</Title>
+        <View style={styles.controls}>
+          <Button onPress={handleNextGuess.bind(this, "lower")}>
+            <Ionicons name="md-remove" size={30} />
+          </Button>
+          <NumberContainer number={currentGuess} />
+          <Button onPress={handleNextGuess.bind(this, "greater")}>
+            <Ionicons name="md-add" size={30} />
+          </Button>
+        </View>
+        <View style={styles.listContainer}>
+          {/* <ScrollView contentContainerStyle={styles.list}>
+            {pastGuesses.map((value, i) =>
+              renderListItem(value, pastGuesses.length - i)
+            )}
+          </ScrollView> */}
+
+          <FlatList
+            keyExtractor={(item) => item}
+            data={pastGuesses}
+            renderItem={renderListItem.bind(this, pastGuesses.length)}
+            contentContainerStyle={styles.list}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -112,14 +164,21 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 20,
+    marginTop: Dimensions.get("window").height > 600 ? 20 : 5,
     width: 300,
     maxWidth: "80%",
   },
 
+  controls: {
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+
   listContainer: {
     flex: 1,
-    width: "60%",
+    width: Dimensions.get("window").width > 360 ? "60%" : "80%", //OUR APP ONLY APPLY IT ON STARTS, WE NEED TO LISTEN TO A POSSIBLE CHANGE
     marginTop: 20,
   },
 

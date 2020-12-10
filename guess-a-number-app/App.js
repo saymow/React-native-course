@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, SafeAreaView } from "react-native";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
+
+import Colors from "./constants/colors";
 
 import Header from "./components/Header";
 import GameScreen from "./screens/GameScreen";
@@ -60,15 +62,18 @@ export default function App() {
     );
 
   return (
-    <View style={styles.container}>
-      <Header title="Guess a Number" />
-      {content}
-    </View>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <Header title="Guess a Number" />
+        {content}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.bgPrimary,
   },
 });
