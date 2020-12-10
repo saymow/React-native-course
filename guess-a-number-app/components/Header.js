@@ -5,8 +5,6 @@ import Title from "../components/Title";
 import Colors from "../constants/colors";
 
 const Header = ({ title }) => {
-  console.log(Platform.OS);
-
   return (
     <View
       style={{

@@ -62,11 +62,9 @@ export default function App() {
     );
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <Header title="Guess a Number" />
-        {content}
-      </View>
+    <SafeAreaView style={styles.container}>
+      <Header title="Guess a Number" />
+      {content}
     </SafeAreaView>
   );
 }
