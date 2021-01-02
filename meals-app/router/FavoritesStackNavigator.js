@@ -7,7 +7,6 @@ import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/colors";
 import FavoriteScreens from "../screens/FavoritesScreens";
 import MealDetailsScreen from "../screens/MealDetailsScreen";
-import { MEALS } from "../data/dummy-data";
 
 const Stack = createStackNavigator();
 
@@ -42,12 +41,21 @@ const FavoritesStackNavigator = () => {
       <Stack.Screen
         name="MealDetails"
         options={({ route }) => {
-          const mealId = route.params.id ?? "invalid";
-
-          const meal = MEALS.find((_meal) => _meal.id === mealId);
+          const mealTitle = route.params.mealTitle ?? "Cannot find meal title";
+          const toggleFav = route.params.toggleFav;
+          const isFavorite = route.params.isFav;
 
           return {
-            title: meal.title,
+            title: mealTitle,
+            headerRight: () => (
+              <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                  title="Favorite"
+                  iconName={isFavorite ? "ios-star" : "ios-star-outline"}
+                  onPress={toggleFav}
+                />
+              </HeaderButtons>
+            ),
           };
         }}
         component={MealDetailsScreen}

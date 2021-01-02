@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { stackScreenOptions } from ".";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
 import { CATEGORIES, MEALS } from "../data/dummy-data";
 import CategoriesScreen from "../screens/CategoriesScreen";
@@ -57,20 +57,18 @@ const StackNavigator = () => {
         name="MealDetails"
         component={MealDetailsScreen}
         options={({ route }) => {
-          const mealId = route.params.id ?? "invalid";
-
-          const meal = MEALS.find((_meal) => _meal.id === mealId);
+          const mealTitle = route.params.mealTitle ?? "Cannot find meal title";
+          const toggleFav = route.params.toggleFav;
+          const isFavorite = route.params.isFav;
 
           return {
-            title: meal.title,
+            title: mealTitle,
             headerRight: () => (
               <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item
                   title="Favorite"
-                  iconName="ios-star"
-                  onPress={() => {
-                    console.log("Mark as favorite");
-                  }}
+                  iconName={isFavorite ? "ios-star" : "ios-star-outline"}
+                  onPress={toggleFav}
                 />
               </HeaderButtons>
             ),

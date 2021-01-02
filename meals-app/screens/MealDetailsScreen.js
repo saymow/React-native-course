@@ -1,16 +1,8 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  ScrollView,
-  Image,
-} from "react-native";
-
+import React, { useEffect, useCallback } from "react";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import DefaultText from "../components/DefaultText";
-
-import { MEALS } from "../data/dummy-data";
+import { toggleFavorite } from "../store/actions/meals";
 
 const ListItem = (props) => {
   return (
@@ -20,10 +12,32 @@ const ListItem = (props) => {
   );
 };
 
-function MealDetailsScreen({ route }) {
+function MealDetailsScreen({ route, navigation }) {
   const mealId = route.params.id ?? "invalid";
+  const dispatch = useDispatch();
 
-  const meal = MEALS.find((_meal) => _meal.id === mealId);
+  const { meals } = useSelector((state) => state.meals);
+  const isFavorited = useSelector((state) =>
+    state.meals.favoriteMeals.some((meal) => meal.id === mealId)
+  );
+
+  const meal = meals.find((_meal) => _meal.id === mealId);
+
+  const handleToggleFavorite = useCallback(() => {
+    dispatch(toggleFavorite(mealId));
+  }, [dispatch, mealId]);
+
+  // useEffect(() => {
+  //   navigation.setParams({ mealTitle: meal.title });
+  // }, [meal]);
+
+  useEffect(() => {
+    navigation.setParams({ isFav: isFavorited });
+  }, [isFavorited]);
+
+  useEffect(() => {
+    navigation.setParams({ toggleFav: handleToggleFavorite });
+  }, [handleToggleFavorite]);
 
   return (
     <ScrollView>
