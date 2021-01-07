@@ -3,6 +3,7 @@ import Product from "../../models/product";
 import {
   CREATE_PRODUCT,
   DELETE_PRODUCT,
+  SET_PRODUCT,
   UPDATE_PRODUCT,
 } from "../actions/products";
 
@@ -13,6 +14,14 @@ const initialState = {
 
 export function productListReducer(state = initialState, action) {
   switch (action.type) {
+    case SET_PRODUCT: {
+      const { products } = action.payload;
+      return {
+        ...state,
+        availableProducts: products,
+        userProducts: products.filter((prod) => prod.ownerId === "u1"),
+      };
+    }
     case DELETE_PRODUCT: {
       const pid = action.payload.id;
 
@@ -25,10 +34,10 @@ export function productListReducer(state = initialState, action) {
       };
     }
     case CREATE_PRODUCT: {
-      const { title, description, imageUrl, price } = action.payload;
+      const { id, title, description, imageUrl, price } = action.payload;
 
       const newProduct = new Product(
-        new Date().toString(),
+        id,
         "u1",
         title,
         imageUrl,
