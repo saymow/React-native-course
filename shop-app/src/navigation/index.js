@@ -1,60 +1,24 @@
-import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import ProductsNavigator from "./stack/ShopNavigation/ProductsNavigator";
-import OrderNavigatior from "./stack/OrdersNavigation/OrderNavigator";
-import AdminNavigator from "./stack/AdminNavigation/AdminNavigator";
-import { Ionicons } from "@expo/vector-icons";
-import { Platform } from "react-native";
-
-const Drawer = createDrawerNavigator();
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import StartupScreen from "../screens/StartupScreen";
+import MainDrawer from "./drawer/MainDrawer";
+import AuthNavigator from "./stack/AuthNavigation/AuthNavigator";
 
 const Navigator = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const authenticated = useSelector((state) => state.auth.isAuth);
+
   return (
     <NavigationContainer>
-      <Drawer.Navigator>
-        <Drawer.Screen
-          name="Shop"
-          options={{
-            drawerIcon: (drawerConfig) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-                size={23}
-                color={drawerConfig.color}
-              />
-            ),
-          }}
-          component={ProductsNavigator}
-        />
-
-        <Drawer.Screen
-          name="Orders"
-          options={{
-            drawerIcon: (drawerConfig) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-list" : "ios-list"}
-                size={23}
-                color={drawerConfig.color}
-              />
-            ),
-          }}
-          component={OrderNavigatior}
-        />
-
-        <Drawer.Screen
-          name="Admin"
-          options={{
-            drawerIcon: (drawerConfig) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-create" : "ios-create"}
-                size={23}
-                color={drawerConfig.color}
-              />
-            ),
-          }}
-          component={AdminNavigator}
-        />
-      </Drawer.Navigator>
+      {isLoading ? (
+        <StartupScreen onLoad={() => setIsLoading(false)} />
+      ) : authenticated ? (
+        <MainDrawer />
+      ) : (
+        <AuthNavigator />
+      )}
     </NavigationContainer>
   );
 };

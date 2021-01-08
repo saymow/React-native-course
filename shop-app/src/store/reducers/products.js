@@ -8,18 +8,18 @@ import {
 } from "../actions/products";
 
 const initialState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((prod) => prod.ownerId === "u1"),
+  availableProducts: [],
+  userProducts: [],
 };
 
 export function productListReducer(state = initialState, action) {
   switch (action.type) {
     case SET_PRODUCT: {
-      const { products } = action.payload;
+      const { products, userProducts } = action.payload;
       return {
         ...state,
         availableProducts: products,
-        userProducts: products.filter((prod) => prod.ownerId === "u1"),
+        userProducts,
       };
     }
     case DELETE_PRODUCT: {
@@ -34,11 +34,18 @@ export function productListReducer(state = initialState, action) {
       };
     }
     case CREATE_PRODUCT: {
-      const { id, title, description, imageUrl, price } = action.payload;
+      const {
+        id,
+        title,
+        description,
+        imageUrl,
+        price,
+        ownerId,
+      } = action.payload;
 
       const newProduct = new Product(
         id,
-        "u1",
+        ownerId,
         title,
         imageUrl,
         description,

@@ -43,8 +43,7 @@ const ProductsOverviewScreen = ({ navigation }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    loadProducts();
-    setIsLoading(false);
+    loadProducts().then(() => setIsLoading(false));
   }, [loadProducts]);
 
   const handleSelectItem = (id, title) => {

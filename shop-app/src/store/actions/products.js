@@ -5,8 +5,10 @@ export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const SET_PRODUCT = "SET_PRODUCT";
 
-export const fetchProducts = () => async (dispatch) => {
+export const fetchProducts = () => async (dispatch, getState) => {
   try {
+    const { userId } = getState().auth;
+
     const response = await fetch(
       "https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products.json"
     );
@@ -19,7 +21,7 @@ export const fetchProducts = () => async (dispatch) => {
       (key) =>
         new Product(
           key,
-          "u1",
+          resData[key].ownerId,
           resData[key].title,
           resData[key].imageUrl,
           resData[key].description,
@@ -27,20 +29,28 @@ export const fetchProducts = () => async (dispatch) => {
         )
     );
 
-    dispatch({ type: SET_PRODUCT, payload: { products: loadedProducts } });
+    dispatch({
+      type: SET_PRODUCT,
+      payload: {
+        products: loadedProducts,
+        userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+      },
+    });
   } catch (err) {
     //send to custom analytics server
     throw err;
   }
 };
 
-export const deleteProduct = (id) => async (dispatch) => {
+export const deleteProduct = (id) => async (dispatch, getState) => {
   const options = {
     method: "DELETE",
   };
 
+  const token = getState().auth.token;
+
   const response = await fetch(
-    `https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products/${id}.json`,
+    `https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
     options
   );
 
@@ -55,12 +65,15 @@ export const deleteProduct = (id) => async (dispatch) => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const { token, userId } = getState().auth;
+
     const product = {
       title,
       description,
       imageUrl,
       price,
+      ownerId: userId,
     };
 
     const options = {
@@ -72,7 +85,7 @@ export const createProduct = (title, description, imageUrl, price) => {
     };
 
     const response = await fetch(
-      "https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products.json",
+      `https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products.json?auth=${token}`,
       options
     );
 
@@ -86,9 +99,12 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const updateProduct = (id, title, description, imageUrl) => async (
-  dispatch
+  dispatch,
+  getState
 ) => {
   const updatedProduct = { title, description, imageUrl };
+
+  const token = getState().auth.token;
 
   const options = {
     method: "PATCH",
@@ -99,7 +115,7 @@ export const updateProduct = (id, title, description, imageUrl) => async (
   };
 
   const response = await fetch(
-    `https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products/${id}.json`,
+    `https://rn-complete-guide-202fc-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
     options
   );
 
